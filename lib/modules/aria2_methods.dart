@@ -7,7 +7,9 @@ class Method {
 
   /// 方法参数
   List params;
+
   Method(this.methodName, this.params);
+
   toMap() {
     return {"methodName": methodName, "params": params};
   }
@@ -15,16 +17,16 @@ class Method {
 
 abstract class Aria2Methods {
   /// 添加下载链接
-  addUri(List<String> url);
+  addUri(List<String> url, {Map? extraParams});
 
   /// 添加种子，或种子内容
-  addTorrent(String base64Torrent);
+  addTorrent(String base64Torrent, {Map? extraParams});
 
   /// 获取下载任务中活动的节点
   getPeers(String gid);
 
   /// 添加metalink
-  addMetalink(String base64Metalink);
+  addMetalink(String base64Metalink, {Map? extraParams});
 
   /// 删除下载任务
   remove(String gid);

@@ -23,15 +23,18 @@ class Aria2Connection implements aria2_methods.Aria2Methods {
     }
   }
 
-  Future _requestApi(String method, List params) async {
+  Future _requestApi(String method, List params, {Map? extraParams}) async {
     if (secret != "") {
       if (method != "system.multicall") {
         params.insert(0, "token:$secret");
+        params.add(extraParams);
       } else {
         for (var i = 0; i < params.length; i++) {
           params[i]["params"].insert(0, "token:$secret");
+          if (extraParams != null) {
+            params[i]["params"].add(extraParams);
+          }
         }
-        params = [params];
       }
     }
     if (protocol == 'websocket') {
@@ -50,8 +53,9 @@ class Aria2Connection implements aria2_methods.Aria2Methods {
   }
 
   @override
-  Future<String> addMetalink(String base64Metalink) async {
-    return await _requestApi('aria2.addMetalink', [base64Metalink]);
+  Future<String> addMetalink(String base64Metalink, {Map? extraParams}) async {
+    return await _requestApi('aria2.addMetalink', [base64Metalink],
+        extraParams: extraParams);
   }
 
   @override
@@ -66,13 +70,14 @@ class Aria2Connection implements aria2_methods.Aria2Methods {
   }
 
   @override
-  Future<String> addTorrent(String base64Torrent) async {
-    return await _requestApi('aria2.addTorrent', [base64Torrent]);
+  Future<String> addTorrent(String base64Torrent, {Map? extraParams}) async {
+    return await _requestApi('aria2.addTorrent', [base64Torrent],
+        extraParams: extraParams);
   }
 
   @override
-  Future<String> addUri(List<String> url) async {
-    return await _requestApi('aria2.addUri', [url]);
+  Future<String> addUri(List<String> url, {Map? extraParams}) async {
+    return await _requestApi('aria2.addUri', [url], extraParams: extraParams);
   }
 
   @override

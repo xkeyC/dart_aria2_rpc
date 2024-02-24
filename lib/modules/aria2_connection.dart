@@ -8,18 +8,17 @@ import '../models/index.dart';
 import 'dart:convert';
 
 class Aria2Connection implements aria2_methods.Aria2Methods {
-  // ignore: prefer_typing_uninitialized_variables
-  var _client;
+  json_rpc.Client? _client;
   String rpcUrl;
   String protocol;
   String secret = "";
 
   Aria2Connection(this.rpcUrl, this.protocol, this.secret) {
     if (protocol == 'websocket') {
-      var _socket = IOWebSocketChannel.connect(rpcUrl);
-      _client = json_rpc.Client(_socket.cast<String>());
+      var socket = IOWebSocketChannel.connect(rpcUrl);
+      _client = json_rpc.Client(socket.cast<String>());
 
-      unawaited(_client.listen());
+      unawaited(_client?.listen());
     }
   }
 
@@ -38,7 +37,7 @@ class Aria2Connection implements aria2_methods.Aria2Methods {
       }
     }
     if (protocol == 'websocket') {
-      return await _client.sendRequest(method, params);
+      return await _client?.sendRequest(method, params);
     } else {
       var res = await Dio().post(rpcUrl, data: {
         'jsonrpc': '2.0',
@@ -177,8 +176,8 @@ class Aria2Connection implements aria2_methods.Aria2Methods {
 
   @override
   Future multicall(List<aria2_methods.Method> methods) async {
-    var _methods = methods.map((item) => item.toMap());
-    return await _requestApi('system.multicall', _methods.toList());
+    var m = methods.map((item) => item.toMap());
+    return await _requestApi('system.multicall', m.toList());
   }
 
   @override

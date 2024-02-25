@@ -23,16 +23,16 @@ class Aria2Connection implements aria2_methods.Aria2Methods {
   }
 
   Future _requestApi(String method, List params, {Map? extraParams}) async {
-    if (secret != "") {
-      if (method != "system.multicall") {
-        params.insert(0, "token:$secret");
+    if (method != "system.multicall") {
+      if (secret.isNotEmpty) params.insert(0, "token:$secret");
+      if (extraParams != null) {
         params.add(extraParams);
-      } else {
-        for (var i = 0; i < params.length; i++) {
-          params[i]["params"].insert(0, "token:$secret");
-          if (extraParams != null) {
-            params[i]["params"].add(extraParams);
-          }
+      }
+    } else {
+      for (var i = 0; i < params.length; i++) {
+        if (secret.isNotEmpty) params[i]["params"].insert(0, "token:$secret");
+        if (extraParams != null) {
+          params[i]["params"].add(extraParams);
         }
       }
     }
@@ -69,8 +69,9 @@ class Aria2Connection implements aria2_methods.Aria2Methods {
   }
 
   @override
-  Future<String> addTorrent(String base64Torrent, {Map? extraParams}) async {
-    return await _requestApi('aria2.addTorrent', [base64Torrent],
+  Future<String> addTorrent(String base64Torrent,
+      {List<String> urls = const [], Map? extraParams}) async {
+    return await _requestApi('aria2.addTorrent', [base64Torrent, urls],
         extraParams: extraParams);
   }
 

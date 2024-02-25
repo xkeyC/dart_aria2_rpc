@@ -20,7 +20,8 @@ abstract class Aria2Methods {
   addUri(List<String> url, {Map? extraParams});
 
   /// 添加种子，或种子内容
-  addTorrent(String base64Torrent, {Map? extraParams});
+  addTorrent(String base64Torrent,
+      {List<String> urls = const [], Map? extraParams});
 
   /// 获取下载任务中活动的节点
   getPeers(String gid);
